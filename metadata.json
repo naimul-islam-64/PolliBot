@@ -1,0 +1,6 @@
+{
+  "name": "PolliBot",
+  "description": "A premium AI chatbot using Pollinations API with BYOK",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
