@@ -34,7 +34,7 @@ export default function App() {
   }, [apiKey, keyExpiry, clearApiKey]);
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans">
+    <div className="flex h-[100dvh] w-full bg-background text-foreground overflow-hidden font-sans pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <Sidebar onOpenSettings={() => setIsSettingsOpen(true)} />
       <ChatArea />
       

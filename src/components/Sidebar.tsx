@@ -1,9 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../store';
 import { Button } from '@/components/ui/button';
-import { Plus, MessageSquare, Trash2, Settings, Menu, Edit2, Check, X } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, Settings, Menu, Edit2, Check, X, MoreHorizontal } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import clsx from 'clsx';
 
 interface SidebarProps {
@@ -16,6 +30,7 @@ const SidebarContent = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -24,8 +39,7 @@ const SidebarContent = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
     }
   }, [editingId]);
 
-  const startEdit = (e: React.MouseEvent, id: string, currentTitle: string) => {
-    e.stopPropagation();
+  const startEdit = (id: string, currentTitle: string) => {
     setEditingId(id);
     setEditTitle(currentTitle);
   };
@@ -44,9 +58,12 @@ const SidebarContent = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
     setEditingId(null);
   };
 
+  const chatToDelete = chats.find((c) => c.id === deleteConfirmationId);
+
   return (
-    <div className="flex flex-col h-full bg-secondary/30 border-r">
-      <div className="p-3">
+    <>
+      <div className="flex flex-col h-full bg-secondary/30 border-r">
+        <div className="p-3">
         <Button 
           variant="outline" 
           className="w-full justify-start gap-2 bg-background"
@@ -91,21 +108,21 @@ const SidebarContent = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
                   <div className="truncate text-xs">{chat.title}</div>
                 </div>
                 <div className="flex items-center shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button 
-                    className="p-1 hover:text-foreground transition-colors"
-                    onClick={(e) => startEdit(e, chat.id, chat.title)}
-                  >
-                    <Edit2 className="w-3 h-3" />
-                  </button>
-                  <button 
-                    className="p-1 hover:text-destructive transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteChat(chat.id);
-                    }}
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="p-1 text-muted-foreground hover:text-foreground transition-colors outline-none ring-0 border-none bg-transparent flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                        <MoreHorizontal className="w-4 h-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); startEdit(chat.id, chat.title); }}>
+                        <Edit2 className="w-4 h-4 mr-2" />
+                        Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuItem variant="destructive" onClick={(e) => { e.stopPropagation(); setDeleteConfirmationId(chat.id); }}>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </>
             )}
@@ -130,6 +147,25 @@ const SidebarContent = ({ onOpenSettings }: { onOpenSettings: () => void }) => {
         </button>
       </div>
     </div>
+
+    <Dialog open={!!deleteConfirmationId} onOpenChange={(open) => !open && setDeleteConfirmationId(null)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Chat</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete "{chatToDelete?.title}"? This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setDeleteConfirmationId(null)}>Cancel</Button>
+          <Button variant="destructive" onClick={() => {
+            if (deleteConfirmationId) deleteChat(deleteConfirmationId);
+            setDeleteConfirmationId(null);
+          }}>Delete</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
 

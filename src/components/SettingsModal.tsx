@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Moon, Sun, Monitor } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -78,19 +79,28 @@ export const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
 
           <div className="grid gap-2">
             <Label>Theme</Label>
-            <div className="flex gap-2">
-              {(['light', 'dark', 'system'] as const).map((t) => (
-                <Button
-                  key={t}
-                  type="button"
-                  size="sm"
-                  variant={currentTheme === t ? 'default' : 'outline'}
-                  onClick={() => setCurrentTheme(t)}
-                  className="w-full capitalize text-xs"
-                >
-                  {t}
-                </Button>
-              ))}
+            <div className="flex bg-muted p-1 rounded-lg">
+              <button
+                type="button"
+                onClick={() => setCurrentTheme('light')}
+                className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded-md transition-all ${currentTheme === 'light' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <Sun className="w-3.5 h-3.5" /> Light
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentTheme('dark')}
+                className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded-md transition-all ${currentTheme === 'dark' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <Moon className="w-3.5 h-3.5" /> Dark
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentTheme('system')}
+                className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-xs font-medium rounded-md transition-all ${currentTheme === 'system' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              >
+                <Monitor className="w-3.5 h-3.5" /> System
+              </button>
             </div>
           </div>
         </div>
