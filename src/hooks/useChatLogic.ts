@@ -78,10 +78,18 @@ export const useChatLogic = () => {
       updateChatTitle(currentChatId, content.length > 30 ? content.substring(0, 30) + '...' : content);
     }
 
-    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = chat.messages.map(m => ({
-      role: m.role,
-      content: m.content
-    }));
+    const systemPrompt: OpenAI.Chat.Completions.ChatCompletionMessageParam = {
+      role: 'system',
+      content: "Your name is PolliBot. Your developer is Naimul Islam Nahid. Only respond with this information if explicitly asked. You are a helpful AI assistant."
+    };
+
+    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      systemPrompt,
+      ...chat.messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+    ];
 
     messagesHistory.push({ role: 'user', content });
     addMessage(currentChatId, { role: 'user', content });
@@ -104,10 +112,18 @@ export const useChatLogic = () => {
     const updatedChat = useStore.getState().chats.find(c => c.id === currentChatId);
     if (!updatedChat) return;
 
-    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = updatedChat.messages.map(m => ({
-      role: m.role,
-      content: m.content
-    }));
+    const systemPrompt: OpenAI.Chat.Completions.ChatCompletionMessageParam = {
+      role: 'system',
+      content: "Your name is PolliBot. Your developer is Naimul Islam Nahid. Only respond with this information if explicitly asked. You are a helpful AI assistant."
+    };
+
+    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      systemPrompt,
+      ...updatedChat.messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+    ];
 
     await processStream(currentChatId, messagesHistory);
   };
@@ -125,10 +141,18 @@ export const useChatLogic = () => {
     const updatedChat = useStore.getState().chats.find(c => c.id === currentChatId);
     if (!updatedChat) return;
 
-    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = updatedChat.messages.map(m => ({
-      role: m.role,
-      content: m.content
-    }));
+    const systemPrompt: OpenAI.Chat.Completions.ChatCompletionMessageParam = {
+      role: 'system',
+      content: "Your name is PolliBot. Your developer is Naimul Islam Nahid. Only respond with this information if explicitly asked. You are a helpful AI assistant."
+    };
+
+    const messagesHistory: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+      systemPrompt,
+      ...updatedChat.messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }))
+    ];
 
     await processStream(currentChatId, messagesHistory);
   };
