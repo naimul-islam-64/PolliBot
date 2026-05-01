@@ -51,8 +51,8 @@ Ensure you have [Node.js](https://nodejs.org/) installed on your machine.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/pollibot.git
-   cd pollibot
+   git clone https://github.com/naimul-islam-64/PolliBot.git
+   cd PolliBot
    ```
 
 2. **Install the dependencies:**
